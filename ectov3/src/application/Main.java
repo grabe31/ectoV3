@@ -15,9 +15,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -32,16 +34,15 @@ import model.Workout;
 public class Main extends Application {
 	private ExerciseBuilder eb = new ExerciseBuilder();
 	private WorkoutBuilder wb = new WorkoutBuilder();
-	private Workout w;
 	private VBox workoutDisplay;
-	private int current = -1;
-	private int wHeight = 550;
+	private int wHeight = 650;
 	private final int WWIDTH = 600;
 	private final int padding = 10;
 	private final int inputWidth = 75;
 	private final int exBoxWidth = 200;
 	private final int exBoxHeight = 50;
 	Label timerLabel = new Label();
+	
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -49,15 +50,15 @@ public class Main extends Application {
 		VBox exerciseInputs = createExerciseInputs(wb, eb);
 
 		workoutDisplay = createWorkoutDisplay();
-
-		HBox beginHBox = new HBox(WWIDTH / 2.5);
-		Label space = new Label("         ");
+		
+		
+		
 		Button beginWorkoutButton = new Button("Begin Workout");
 		beginWorkoutButton.setPrefWidth(100);
 		beginWorkoutButton.setPrefHeight(50);
 		beginWorkoutButton.setAlignment(Pos.CENTER);
-		beginWorkoutButton.setOnAction(event -> {
 
+		beginWorkoutButton.setOnAction(event -> {
 			if (wb.getExercises().isEmpty()) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Error");
@@ -68,16 +69,18 @@ public class Main extends Application {
 				showCurrentExerciseWindow(primaryStage);
 			}
 		});
-		beginHBox.getChildren().addAll(space, beginWorkoutButton);
+		
+		Label space1 = new Label("               ");
+		Label space2 = new Label("               ");
 
+		HBox beginHBox = new HBox(padding);
+		beginHBox.getChildren().addAll(beginWorkoutButton, space1, space2);
 		VBox beginVBox = new VBox(padding);
-		Label space2 = new Label("");
-		beginVBox.getChildren().addAll(beginHBox, space2);
+		beginVBox.getChildren().addAll(beginHBox, workoutDisplay);
 
 		BorderPane root = new BorderPane();
 		root.setLeft(exerciseInputs);
-		root.setRight(workoutDisplay);
-		root.setBottom(beginVBox);
+		root.setRight(beginVBox);
 
 		Scene scene = new Scene(root, WWIDTH, wHeight);
 		primaryStage.setScene(scene);
@@ -93,9 +96,6 @@ public class Main extends Application {
 		VBox exerciseBox = new VBox(padding);
 		exerciseBox.setPadding(new Insets(padding * 2));
 
-//		Label titleLabel = new Label("Current Exercise");
-//		titleLabel.setAlignment(Pos.CENTER);
-//		titleLabel.setStyle("-fx-font-size: 20px;");
 		Stack<Exercise> repeatedExercises = new Stack<>();
 		Exercise[] current = new Exercise[1];
 		current[0] = wb.getNext();
@@ -108,12 +108,13 @@ public class Main extends Application {
 		buttons.getChildren().addAll(prevButton, startButton, nextButton);
 
 		nextButton.setOnAction(event -> {
+			System.out.println(wb.getExercises().toString());
+			System.out.println(wb.getExercises().size());
 
 			wb.addPrevExecise(current[0]);
-			if(!repeatedExercises.isEmpty()) {
+			if (!repeatedExercises.isEmpty()) {
 				current[0] = repeatedExercises.pop();
-			}
-			else if (wb.getExercises().size() > -1) {
+			} else if (wb.getExercises().size() > -1) {
 				current[0] = wb.getNext();
 			}
 
@@ -126,25 +127,15 @@ public class Main extends Application {
 
 				exerciseBox.getChildren().clear();
 				exerciseBox.getChildren().add(content);
-				
 
 			} else {
 				exerciseStage.close();
 				workoutDisplay.getChildren().clear();
 			}
-
-//			wb.getExercises().poll();
-//			if (!wb.getExercises().isEmpty()) {
-//				currentExercisePane.getChildren().clear();
-//				currentExercisePane.getChildren().add(createExerciseRectangle(wb.getExercises().peek()));
-//			} else {
-//				exerciseStage.close();
-//				workoutDisplay.getChildren().clear();
-//			}
 		});
 
 		prevButton.setOnAction(event -> {
-			
+
 			repeatedExercises.push(current[0]);
 			current[0] = wb.getPrev();
 
@@ -159,13 +150,11 @@ public class Main extends Application {
 				exerciseBox.getChildren().add(content);
 
 			} else {
-				// exerciseStage.close();
-				// workoutDisplay.getChildren().clear();
+				//do nothing
 			}
 
 		});
 
-		
 		startButton.setOnAction(event -> {
 			if (current[0].getTime() > 0) {
 				startTimer(current[0].getTime(), timerLabel);
@@ -229,7 +218,6 @@ public class Main extends Application {
 		Label weightLabel = new Label("and Weight");
 		TextField weightField = new TextField();
 		weightField.setMaxWidth(inputWidth);
-		// weightField.setPromptText("lbs");
 		weightField.setText("20");
 		repsAndWeightBox.getChildren().addAll(repsLabel, repsField, weightLabel, weightField);
 
@@ -287,8 +275,10 @@ public class Main extends Application {
 			} else {
 				Exercise e = eb.build(name, Integer.parseInt(sets), Integer.parseInt(reps), Integer.parseInt(time),
 						Double.parseDouble(weight), type);
+				for (int i = 0; i < Integer.parseInt(sets); i++) {
 				wb.addExercise(e);
 				updateWorkoutDisplay();
+				}
 			}
 
 //             // Clear input fields
@@ -315,6 +305,9 @@ public class Main extends Application {
 	private VBox createWorkoutDisplay() {
 		VBox workoutDisplay = new VBox(padding);
 		workoutDisplay.setPadding(new Insets(padding));
+		ScrollPane scrollPane = new ScrollPane(workoutDisplay);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setPrefHeight(wHeight);
 		updateWorkoutDisplay();
 		return workoutDisplay;
 	}
@@ -323,14 +316,11 @@ public class Main extends Application {
 		if (workoutDisplay != null) {
 			workoutDisplay.getChildren().clear();
 		}
-		Queue<Exercise> workoutQueue = wb.getExercises();
+		//Queue<Exercise> workoutQueue = wb.getExercises();
 
-		for (Exercise e : workoutQueue) {
-			int sets = e.getSets();
-			for (int i = 0; i < sets; i++) {
+		for (Exercise e : wb.getExercises()) {
 				StackPane exercisePane = createExerciseRectangle(e);
 				workoutDisplay.getChildren().add(exercisePane);
-			}
 		}
 
 	}
