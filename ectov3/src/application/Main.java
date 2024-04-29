@@ -234,7 +234,7 @@ public class Main extends Application {
 		Label weightLabel = new Label("and Weight");
 		TextField weightField = new TextField();
 		weightField.setMaxWidth(inputWidth);
-		weightField.setText("20");
+		weightField.setText("0");
 		repsAndWeightBox.getChildren().addAll(repsLabel, repsField, weightLabel, weightField);
 
 		Label or = new Label("or");
@@ -247,7 +247,7 @@ public class Main extends Application {
 		timeField.setMaxWidth(inputWidth);
 		timeField.setPromptText("Seconds");
 		timeField.setAlignment(Pos.CENTER);
-		timeField.setText("5");
+		timeField.setText("0");
 		Button submitButton = new Button("Add to Workout");
 		submitButton.setAlignment(Pos.CENTER_RIGHT);
 		Label space = new Label("     ");
