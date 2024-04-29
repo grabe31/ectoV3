@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -30,6 +31,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Exercise;
 import model.Workout;
+import ui.ExerciseListView;
 
 public class Main extends Application {
 	private ExerciseBuilder eb = new ExerciseBuilder();
@@ -42,6 +44,9 @@ public class Main extends Application {
 	private final int exBoxWidth = 200;
 	private final int exBoxHeight = 50;
 	Label timerLabel = new Label();
+	TextField nameField = new TextField();
+	ChoiceBox<String> typeBox = new ChoiceBox<>();
+
 	
 
 	@Override
@@ -78,9 +83,17 @@ public class Main extends Application {
 		VBox beginVBox = new VBox(padding);
 		beginVBox.getChildren().addAll(beginHBox, workoutDisplay);
 
+		
+		
+		ExerciseListView exerciseListView = new ExerciseListView(nameField, typeBox);
+		exerciseListView.loadExercisesFromCSV("C:\\Users\\ericg\\git\\ectoV3\\ectov3\\src\\resources\\exercises.csv");
+		
+		VBox leftSide = new VBox(padding);
+		leftSide.getChildren().addAll(exerciseInputs, exerciseListView);
 		BorderPane root = new BorderPane();
-		root.setLeft(exerciseInputs);
+		root.setLeft(leftSide);
 		root.setRight(beginVBox);
+	
 
 		Scene scene = new Scene(root, WWIDTH, wHeight);
 		primaryStage.setScene(scene);
@@ -108,8 +121,6 @@ public class Main extends Application {
 		buttons.getChildren().addAll(prevButton, startButton, nextButton);
 
 		nextButton.setOnAction(event -> {
-			System.out.println(wb.getExercises().toString());
-			System.out.println(wb.getExercises().size());
 
 			wb.addPrevExecise(current[0]);
 			if (!repeatedExercises.isEmpty()) {
@@ -162,7 +173,8 @@ public class Main extends Application {
 		});
 
 		exerciseBox.getChildren().addAll(currentExercisePane, buttons, timerLabel);
-
+		
+		
 		Scene exerciseScene = new Scene(exerciseBox);
 		exerciseStage.setScene(exerciseScene);
 		exerciseStage.setTitle("Current Exercise");
@@ -190,17 +202,14 @@ public class Main extends Application {
 		exerciseInputs.setPadding(new Insets(padding));
 		exerciseInputs.setAlignment(Pos.TOP_LEFT);
 
-		Label nameLabel = new Label("Custom Exercise:");
-		TextField nameField = new TextField();
-		nameField.setText("Walk");
+		Label nameLabel = new Label("Exercise:");
 		nameField.setPromptText("Name");
 
 		HBox typeAndSetsBox = new HBox(padding);
 		typeAndSetsBox.setAlignment(Pos.CENTER_LEFT);
 
 		Label typeLabel = new Label("Type:");
-		ChoiceBox<String> typeBox = new ChoiceBox<>();
-		typeBox.getItems().addAll("Cardio", "Strength", "Flexibility", "Balance", "Warm Up", "Cool Down", "Other");
+		typeBox.getItems().addAll("Cardio", "Strength", "Flexibility", "Balance", "Warm-Ups", "Cool Down", "Other");
 		typeBox.setValue("Cardio");
 
 		Label setsLabel = new Label("            Sets");
@@ -343,7 +352,7 @@ public class Main extends Application {
 		switch (type) {
 		case "Strength":
 			return Color.ORANGE;
-		case "Warm Up":
+		case "Warm-Ups":
 			return Color.GREEN;
 		case "Cardio":
 			return Color.RED;
