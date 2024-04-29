@@ -19,18 +19,30 @@ public class Workout {
 		
 	}
 	
+	/**
+	 * @param - add exercise e to queue
+	 */
 	public void addExercise(Exercise e) {
 		exercises.offer(e);
 	}
 	
+	/**
+	 * @return first exercise in queue
+	 */
 	public Exercise removeExercise() {
 		return exercises.poll();
 	}
 	
+	/**
+	 * @return first exercise in queue
+	 */
 	public Exercise peekExercise() {
 		return exercises.peek();
 	}
 	
+	/**
+	 * @return boolean
+	 */
 	public boolean hasExercise() {
 		return exercises.isEmpty();
 	}

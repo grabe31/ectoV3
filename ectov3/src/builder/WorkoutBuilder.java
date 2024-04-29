@@ -19,15 +19,24 @@ public class WorkoutBuilder {
 			this.exercises = new LinkedList<>();
 			this.prevExercises = new Stack<>();
 		}
-
+		
+		/**
+		 * @param add exercise e to queue
+		 */
 		public void addExercise(Exercise e) {
 			this.exercises.offer(e);
 		}
 		
+		/**
+		 * @param add exercise e to stack
+		 */
 		public void addPrevExecise(Exercise e) {
 			this.prevExercises.add(e);
 		}
 		
+		/**
+		 * @return first exercise in queue
+		 */
 		public Exercise getNext() {
 			if(!exercises.isEmpty()) {
 				Exercise e = exercises.poll();
@@ -37,6 +46,9 @@ public class WorkoutBuilder {
 			return null;
 		}
 		
+		/**
+		 * @return first exercise in stack
+		 */
 		public Exercise getPrev() {
 			if(!prevExercises.isEmpty()) {
 				Exercise e = prevExercises.pop();
@@ -46,6 +58,9 @@ public class WorkoutBuilder {
 			return null;
 		}
 		
+		/**
+		 * @return workout
+		 */
 		public Workout build() {
 			if(this.date == null) {
 				throw new IllegalArgumentException("Workout date cannot be empty.");

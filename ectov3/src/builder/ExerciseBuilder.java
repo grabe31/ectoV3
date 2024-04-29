@@ -15,6 +15,7 @@ public class ExerciseBuilder {
 		return e;
 	}
 	
+	//input validation - not longer used
 	public void validate(String name, int sets, int reps, int time, double weight, String type) {
 		if(name.isEmpty() || type.isEmpty()) {
 			throw new IllegalArgumentException("Exercise must have a name and a type");

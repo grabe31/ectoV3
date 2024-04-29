@@ -47,22 +47,17 @@ public class Main extends Application {
 	TextField nameField = new TextField();
 	ChoiceBox<String> typeBox = new ChoiceBox<>();
 
-	
-
 	@Override
 	public void start(Stage primaryStage) {
 
 		VBox exerciseInputs = createExerciseInputs(wb, eb);
-
 		workoutDisplay = createWorkoutDisplay();
-		
-		
-		
+
+		// begin workout button functionality
 		Button beginWorkoutButton = new Button("Begin Workout");
 		beginWorkoutButton.setPrefWidth(100);
 		beginWorkoutButton.setPrefHeight(50);
 		beginWorkoutButton.setAlignment(Pos.CENTER);
-
 		beginWorkoutButton.setOnAction(event -> {
 			if (wb.getExercises().isEmpty()) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -74,26 +69,24 @@ public class Main extends Application {
 				showCurrentExerciseWindow(primaryStage);
 			}
 		});
-		
+
+		// display exercise rectangles/workout
 		Label space1 = new Label("               ");
 		Label space2 = new Label("               ");
-
 		HBox beginHBox = new HBox(padding);
 		beginHBox.getChildren().addAll(beginWorkoutButton, space1, space2);
 		VBox beginVBox = new VBox(padding);
 		beginVBox.getChildren().addAll(beginHBox, workoutDisplay);
 
-		
-		
+		// display list of exercises to choose from
 		ExerciseListView exerciseListView = new ExerciseListView(nameField, typeBox);
 		exerciseListView.loadExercisesFromCSV("C:\\Users\\ericg\\git\\ectoV3\\ectov3\\src\\resources\\exercises.csv");
-		
+
 		VBox leftSide = new VBox(padding);
 		leftSide.getChildren().addAll(exerciseInputs, exerciseListView);
 		BorderPane root = new BorderPane();
 		root.setLeft(leftSide);
 		root.setRight(beginVBox);
-	
 
 		Scene scene = new Scene(root, WWIDTH, wHeight);
 		primaryStage.setScene(scene);
@@ -101,6 +94,10 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
+	/**
+	 * @param - javaFX stage Opens new window to cycle through exercises Includes
+	 *          button functionality for next, start, previous buttons
+	 */
 	private void showCurrentExerciseWindow(Stage primaryStage) {
 		Stage exerciseStage = new Stage();
 		exerciseStage.initModality(Modality.WINDOW_MODAL);
@@ -161,7 +158,7 @@ public class Main extends Application {
 				exerciseBox.getChildren().add(content);
 
 			} else {
-				//do nothing
+				// do nothing
 			}
 
 		});
@@ -173,14 +170,17 @@ public class Main extends Application {
 		});
 
 		exerciseBox.getChildren().addAll(currentExercisePane, buttons, timerLabel);
-		
-		
+
 		Scene exerciseScene = new Scene(exerciseBox);
 		exerciseStage.setScene(exerciseScene);
 		exerciseStage.setTitle("Current Exercise");
 		exerciseStage.show();
 	}
 
+	/**
+	 * @param - exercise time
+	 * @param - Timer label Count down for timed exercises
+	 */
 	private void startTimer(int seconds, Label timerLabel) {
 		final int[] remainingSeconds = { seconds };
 
@@ -197,6 +197,13 @@ public class Main extends Application {
 		time.play();
 	}
 
+	/**
+	 * @param workout  builder wb
+	 * @param exercise builder eb
+	 * @return VBox with exercise inputs Functionality for all exercise inputs and
+	 *         add to workout button
+	 * 
+	 */
 	private VBox createExerciseInputs(WorkoutBuilder wb, ExerciseBuilder eb) {
 		VBox exerciseInputs = new VBox(padding);
 		exerciseInputs.setPadding(new Insets(padding));
@@ -285,23 +292,23 @@ public class Main extends Application {
 				Exercise e = eb.build(name, Integer.parseInt(sets), Integer.parseInt(reps), Integer.parseInt(time),
 						Double.parseDouble(weight), type);
 				for (int i = 0; i < Integer.parseInt(sets); i++) {
-				wb.addExercise(e);
-				updateWorkoutDisplay();
+					wb.addExercise(e);
+					updateWorkoutDisplay();
 				}
 			}
 
-//             // Clear input fields
-//             nameField.clear();
-//             typeBox.getSelectionModel().clearSelection();
-//             setsField.clear();
-//             repsField.clear();
-//             timeField.clear();
-//             weightField.clear();
-//             typeBox.setValue("Cardio");
-//             setsField.setText("0");
-//             repsField.setText("0");
-//             timeField.setText("0");
-//             weightField.setText("0");
+			// Clear input fields
+			nameField.clear();
+			typeBox.getSelectionModel().clearSelection();
+			setsField.clear();
+			repsField.clear();
+			timeField.clear();
+			weightField.clear();
+			typeBox.setValue("Cardio");
+			setsField.setText("0");
+			repsField.setText("0");
+			timeField.setText("0");
+			weightField.setText("0");
 
 		});
 
@@ -311,6 +318,9 @@ public class Main extends Application {
 		return exerciseInputs;
 	}
 
+	/**
+	 * @return VBox with exercise rectangles
+	 */
 	private VBox createWorkoutDisplay() {
 		VBox workoutDisplay = new VBox(padding);
 		workoutDisplay.setPadding(new Insets(padding));
@@ -321,19 +331,27 @@ public class Main extends Application {
 		return workoutDisplay;
 	}
 
+	/**
+	 * updates exercise display when exercise is added to workout
+	 */
 	private void updateWorkoutDisplay() {
 		if (workoutDisplay != null) {
 			workoutDisplay.getChildren().clear();
 		}
-		//Queue<Exercise> workoutQueue = wb.getExercises();
+		// Queue<Exercise> workoutQueue = wb.getExercises();
 
 		for (Exercise e : wb.getExercises()) {
-				StackPane exercisePane = createExerciseRectangle(e);
-				workoutDisplay.getChildren().add(exercisePane);
+			StackPane exercisePane = createExerciseRectangle(e);
+			workoutDisplay.getChildren().add(exercisePane);
 		}
 
 	}
 
+	/**
+	 * @param Exercise e
+	 * @return StackPane layer with exercise rectangle Build exercise rectangle to
+	 *         add to the workout display
+	 */
 	private StackPane createExerciseRectangle(Exercise e) {
 		Rectangle rect = new Rectangle(exBoxWidth, exBoxHeight);
 		rect.setFill(getExerciseColor(e.getType()));
@@ -347,6 +365,10 @@ public class Main extends Application {
 		return stackPane;
 	}
 
+	/**
+	 * @param exercise type
+	 * @return Color
+	 */
 	private Color getExerciseColor(String type) {
 
 		switch (type) {

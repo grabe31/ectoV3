@@ -24,6 +24,9 @@ public class Exercise {
 		this.weight = weight;
 	}
 
+	/**
+	 * @return Text for exercise rectangle as String
+	 */
 	public String buildLabel() {
 		String s = "";
 
