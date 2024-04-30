@@ -297,18 +297,18 @@ public class Main extends Application {
 				}
 			}
 
-			// Clear input fields
-			nameField.clear();
-			typeBox.getSelectionModel().clearSelection();
-			setsField.clear();
-			repsField.clear();
-			timeField.clear();
-			weightField.clear();
-			typeBox.setValue("Cardio");
-			setsField.setText("0");
-			repsField.setText("0");
-			timeField.setText("0");
-			weightField.setText("0");
+//			// Clear input fields
+//			nameField.clear();
+//			typeBox.getSelectionModel().clearSelection();
+//			setsField.clear();
+//			repsField.clear();
+//			timeField.clear();
+//			weightField.clear();
+//			typeBox.setValue("Cardio");
+//			setsField.setText("0");
+//			repsField.setText("0");
+//			timeField.setText("0");
+//			weightField.setText("0");
 
 		});
 
